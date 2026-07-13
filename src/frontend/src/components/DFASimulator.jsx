@@ -32,13 +32,24 @@ export default function DFASimulator() {
       const acceptList = acceptStates.split(',').map(s => s.trim());
       const transObj = JSON.parse(transitionsStr);
 
-      // Mapping Nodes
+// Mapping Nodes dengan Grid System
+      const maxCols = 4; // Menentukan maksimal ada 4 node menyamping sebelum turun ke baris baru
+      
       const newNodes = stateList.map((state, index) => {
         const isStart = state === startState.trim();
         const isAccept = acceptList.includes(state);
+        
+        // --- LOGIKA GRID ---
+        const col = index % maxCols;       // Menghitung sisa bagi untuk posisi kolom
+        const row = Math.floor(index / maxCols); // Menghitung pembulatan ke bawah untuk baris
+        
+        const xPos = 100 + (col * 200);
+        const yPos = 100 + (row * 150);
+        // -------------------
+
         return {
           id: state,
-          position: { x: 100 + index * 200, y: 150 }, // Posisi node dijajar ke kanan
+          position: { x: xPos, y: yPos },
           data: { label: `${state} ${isStart ? '(Start)' : ''} ${isAccept ? '(Final)' : ''}` },
           style: {
             borderRadius: '50%', width: 65, height: 65,

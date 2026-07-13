@@ -1,6 +1,8 @@
+from automata.regex_engine import RegexToNFA
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from automata.dfa import DFASimulator
+from automata.nfa import NFASimulator
 
 app = Flask(__name__)
 CORS(app)
@@ -38,6 +40,52 @@ def simulate_dfa():
         return jsonify({
             "success": False,
             "error": str(e)
+        }), 400
+
+# --- ENDPOINT MODUL 1: NFA ---
+@app.route('/api/automata/nfa', methods=['POST'])
+def simulate_nfa():
+    try:
+        data = request.get_json()
+        nfa = NFASimulator(
+            data.get('states', []),
+            data.get('alphabet', []),
+            data.get('transitions', {}),
+            data.get('start_state', ''),
+            data.get('accept_states', [])
+        )
+        result = nfa.process(data.get('input_string', ''))
+        return jsonify({"success": True, "data": result}), 200
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 400
+
+# --- FONDASI MODUL 2: REGULAR EXPRESSION ---
+@app.route('/api/regex/convert', methods=['POST'])
+def convert_regex():
+    try:
+        data = request.get_json()
+        regex_pattern = data.get('regex', '')
+        
+        if not regex_pattern:
+            return jsonify({"success": False, "error": "Regex tidak boleh kosong"}), 400
+
+        # Inisialisasi engine dan lakukan konversi
+        engine = RegexToNFA()
+        nfa_result = engine.convert_to_nfa(regex_pattern)
+        
+        # (Nanti kita tambahkan konversi ke Aturan Produksi (Grammar) di sini untuk melengkapi fitur wajib)
+        
+        return jsonify({
+            "success": True,
+            "data": {
+                "nfa": nfa_result
+            }
+        }), 200
+
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": f"Gagal memproses Regex: {str(e)}"
         }), 400
 
 if __name__ == '__main__':
