@@ -6,6 +6,7 @@ from automata.nfa import NFASimulator
 from automata.cfg_engine import CFGEngine
 from automata.nfa_to_dfa import NFAToDFAConverter
 from automata.moore_mealy import MooreMachine, MealyMachine
+from automata.cnf_converter import CNFConverter
 
 app = Flask(__name__)
 CORS(app)
@@ -166,6 +167,17 @@ def parse_cfg():
             "success": False,
             "error": f"Terjadi kesalahan saat memproses CFG: {str(e)}"
         }), 400
+    
+    # --- ENDPOINT MODUL 4: CNF ---
+@app.route('/api/cnf/convert', methods=['POST'])
+def convert_cnf():
+    try:
+        data = request.get_json()
+        converter = CNFConverter(data.get('rules', {}), data.get('start_symbol', 'S'))
+        result = converter.convert()
+        return jsonify({"success": True, "data": result}), 200
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 400
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
