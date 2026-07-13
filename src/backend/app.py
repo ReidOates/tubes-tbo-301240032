@@ -3,6 +3,9 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from automata.dfa import DFASimulator
 from automata.nfa import NFASimulator
+from automata.cfg_engine import CFGEngine
+from automata.nfa_to_dfa import NFAToDFAConverter
+from automata.moore_mealy import MooreMachine, MealyMachine
 
 app = Flask(__name__)
 CORS(app)
@@ -59,6 +62,56 @@ def simulate_nfa():
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 400
 
+# --- ENDPOINT KONVERSI NFA KE DFA ---
+@app.route('/api/automata/nfa-to-dfa', methods=['POST'])
+def convert_nfa_to_dfa():
+    try:
+        data = request.get_json()
+        converter = NFAToDFAConverter(
+            data.get('states', []),
+            data.get('alphabet', []),
+            data.get('transitions', {}),
+            data.get('start_state', ''),
+            data.get('accept_states', [])
+        )
+        result = converter.convert()
+        return jsonify({"success": True, "data": {"dfa": result}}), 200
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 400
+
+# --- ENDPOINT MOORE MACHINE ---
+@app.route('/api/automata/moore', methods=['POST'])
+def simulate_moore():
+    try:
+        data = request.get_json()
+        machine = MooreMachine(
+            data.get('states', []),
+            data.get('alphabet', []),
+            data.get('transitions', {}),
+            data.get('output_table', {}),
+            data.get('start_state', '')
+        )
+        result = machine.process(data.get('input_string', ''))
+        return jsonify({"success": True, "data": result}), 200
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 400
+
+# --- ENDPOINT MEALY MACHINE ---
+@app.route('/api/automata/mealy', methods=['POST'])
+def simulate_mealy():
+    try:
+        data = request.get_json()
+        machine = MealyMachine(
+            data.get('states', []),
+            data.get('alphabet', []),
+            data.get('transitions', {}),
+            data.get('start_state', '')
+        )
+        result = machine.process(data.get('input_string', ''))
+        return jsonify({"success": True, "data": result}), 200
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 400
+
 # --- FONDASI MODUL 2: REGULAR EXPRESSION ---
 @app.route('/api/regex/convert', methods=['POST'])
 def convert_regex():
@@ -86,6 +139,32 @@ def convert_regex():
         return jsonify({
             "success": False,
             "error": f"Gagal memproses Regex: {str(e)}"
+        }), 400
+
+# --- ENDPOINT MODUL 3: CFG & PUSHDOWN AUTOMATA ---
+@app.route('/api/cfg/parse', methods=['POST'])
+def parse_cfg():
+    try:
+        data = request.get_json()
+        rules = data.get('rules', {})
+        start_symbol = data.get('start_symbol', 'S')
+        target_string = data.get('target_string', '')
+
+        if not rules:
+            return jsonify({"success": False, "error": "Aturan produksi CFG tidak boleh kosong"}), 400
+
+        engine = CFGEngine(rules, start_symbol)
+        result = engine.parse(target_string)
+        
+        return jsonify({
+            "success": True,
+            "data": result
+        }), 200
+
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": f"Terjadi kesalahan saat memproses CFG: {str(e)}"
         }), 400
 
 if __name__ == '__main__':
