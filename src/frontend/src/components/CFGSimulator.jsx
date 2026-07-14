@@ -24,7 +24,7 @@ export default function CFGSimulator() {
         target_string: targetString
       };
 
-      const response = await axios.post('http://127.0.0.1:5000/api/cfg/parse', payload);
+      const response = await axios.post('/api/cfg/parse', payload);
       const data = response.data.data;
       setResult(data);
 

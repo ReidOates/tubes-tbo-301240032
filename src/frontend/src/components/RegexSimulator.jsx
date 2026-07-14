@@ -12,7 +12,7 @@ export default function RegexSimulator() {
 
   const handleConvert = async () => {
     try {
-      const response = await axios.post('http://127.0.0.1:5000/api/regex/convert', { regex });
+      const response = await axios.post('/api/regex/convert', { regex });
       const nfaData = response.data.data.nfa;
       setNfaResult(nfaData);
 

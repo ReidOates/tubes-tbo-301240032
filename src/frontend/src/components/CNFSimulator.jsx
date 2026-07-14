@@ -11,7 +11,7 @@ export default function CNFSimulator() {
 
 const handleConvert = async () => {
     try {
-      const response = await axios.post('http://127.0.0.1:5000/api/cnf/convert', {
+      const response = await axios.post('/api/cnf/convert', {
         rules: JSON.parse(rulesStr),
         start_symbol: startSymbol
       });

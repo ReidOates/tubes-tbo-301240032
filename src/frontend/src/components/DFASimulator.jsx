@@ -122,7 +122,8 @@ export default function DFASimulator() {
         payload.transitions = JSON.parse(transMealy);
       }
 
-      const response = await axios.post(`http://127.0.0.1:5000${endpoint}`, payload);
+     // Gunakan variabel 'endpoint', BUKAN teks statis
+      const response = await axios.post(endpoint, payload);
       
       if (activeTab === 'nfa2dfa') {
         // NFA to DFA mereturn DFA hasil konversi
