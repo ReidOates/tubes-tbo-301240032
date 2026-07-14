@@ -1,3 +1,8 @@
+import os
+import sys
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 from automata.regex_engine import RegexToNFA
 from flask import Flask, jsonify, request
 from flask_cors import CORS
