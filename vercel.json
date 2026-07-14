@@ -4,7 +4,14 @@
     { "source": "/(.*)", "destination": "/src/frontend/dist/$1" }
   ],
   "builds": [
-    { "src": "api/index.py", "use": "@vercel/python" },
-    { "src": "src/frontend/package.json", "use": "@vercel/static-build", "config": { "distDir": "dist" } }
+    { 
+      "src": "api/index.py", 
+      "use": "@vercel/python" 
+    },
+    { 
+      "src": "src/frontend/package.json", 
+      "use": "@vercel/static-build", 
+      "config": { "distDir": "dist" } 
+    }
   ]
 }
