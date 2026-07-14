@@ -10,8 +10,8 @@ Otomata Studio dirancang sebagai *platform* edukasi interaktif yang mendemonstra
 
 ## 🔗 Tautan Penting
 
-- **🌍 Live Application:** [Masukkan Link Domain .my.id Kamu]
-- **🎥 Video Presentasi & Demo:** [Masukkan Link YouTube Unlisted/Publik Kamu]
+- **🌍 Live Application:** [https://301240032.my.id]
+- **🎥 Video Presentasi & Demo:** (https://youtu.be/ksRQKo1h2A8)
 
 ---
 
